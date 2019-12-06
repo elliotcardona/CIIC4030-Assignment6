@@ -3,8 +3,8 @@ import ply.lex as lex
 tokens = [
     'IP',
     'NUMBER',
-    'STRING',
-    'PERIOD'
+    'PERIOD',
+    'ID'
 ]
 
 reserved = {
@@ -13,6 +13,10 @@ reserved = {
     'else' : 'ELSE',
     'while': 'WHILE',
     'for' : 'FOR',
+    'START_SERVER' : 'START_SERVER',
+    'END_SERVER' : 'END_SERVER',
+    'CREATE_CLIENT' : 'CREATE_CLIENT',
+    'END_CLIENT' : 'END_CLIENT'
 
 }
 
@@ -29,9 +33,13 @@ def t_NUMBER(t):
     t.value = int(t.value)
     return t
 
-def t_STRING(t):
+
+def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
-    print ("String: '%s'" % t.value)
+    t.type = reserved.get(t.value, 'ID')  # Check for reserved words
+    print ("ID: '%s'" % t.value)
+    return t
+
 
 def t_error(t):
  print("Illegal character '%s'" % t.value[0])
@@ -40,11 +48,21 @@ def t_error(t):
 lexer = lex.lex()
 
 #testing lexer
-data = r'123.423.423.1'
+data0 = r'123.423.423.1'
+data1 = r'ssd'
+data2 = r'START_SERVER'
+data3 = r'END_SERVER'
 
-print ("Data: '%s'" % data)
+print ("Data: '%s'" % data0)
+print ("Data: '%s'" % data1)
+print ("Data: '%s'" % data2)
+print ("Data: '%s'" % data3)
 
-lexer.input(data)
+
+lexer.input(data0)
+lexer.input(data1)
+#lexer.input(data2)
+#lexer.input(data3)
 
 while True:
    tok = lexer.token()
