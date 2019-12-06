@@ -39,6 +39,7 @@ def t_error(t):
 
 lexer = lex.lex()
 
+#testing lexer
 data = r'123.423.423.1'
 
 print ("Data: '%s'" % data)
