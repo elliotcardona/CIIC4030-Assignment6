@@ -5,13 +5,16 @@ import server
 def p_start_server(p):
     'start : START_SERVER'
     print(p[1])
-    server.run()
+    server.run('server')
 
-def p_start_client(p):
+def p_creat_client(p):
     'start : START_CLIENT IP'
     server.p2p.peers = p[2]
-    server.run()
+    server.run('client')
 
+def p_create_client_noIP(p):
+    'start : START_CLIENT'
+    server.run('client')
 
 def p_error(p):
     print("Syntax error in input!")

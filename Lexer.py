@@ -15,7 +15,7 @@ reserved = {
     'for' : 'FOR',
     'START_SERVER' : 'START_SERVER',
     'END_SERVER' : 'END_SERVER',
-    'CREATE_CLIENT' : 'CREATE_CLIENT',
+    'START_CLIENT' : 'START_CLIENT',
     'END_CLIENT' : 'END_CLIENT'
 
 }
