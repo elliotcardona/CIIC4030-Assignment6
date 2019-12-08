@@ -1,23 +1,20 @@
+import sys
 import ply.yacc as yacc
 from Lexer import tokens
-import server
+import server_client
 
 def p_start_server(p):
     'start : START_SERVER'
     print(p[1])
-    server.run('server')
+    server_client.execute('server')
 
 def p_create_client_noIP(p):
     'start : START_CLIENT'
-    print('Client')
-    server.run('client')
+    server_client.execute('client')
 
-def p_creat_client(p):
-    'start : START_CLIENT IP'
-    print('Client ip')
-    server.p2p.peers = p[2]
-    server.run('client')
-
+def p_done(p):
+    'start : FINISH'
+    sys.exit(0)
 
 
 def p_error(p):
@@ -27,7 +24,7 @@ parser = yacc.yacc()
 
 while True:
     try:
-        s = input('calc > ')
+        s = input('S > ')
     except EOFError:
         break
     if not s: continue
