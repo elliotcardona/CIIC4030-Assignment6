@@ -81,7 +81,7 @@ def run(t):
             for peer in p2p.peers:
                 if(t == 'client'):
                     try:
-                        Client(peer)
+                        client = Client(peer)
                     except KeyboardInterrupt:
                         sys.exit(0)
                     except:
