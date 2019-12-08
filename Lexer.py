@@ -21,12 +21,12 @@ reserved = {
 }
 
 tokens += list(reserved.values())
-t_PERIOD = r'\.'
-t_ignore  = ' \t'
+t_ignore = ' \t'
 
 def t_IP(t):
     r'\d+[.]\d+[.]\d+[.]\d+'
     return t
+t_PERIOD = r'\.'
 
 def t_NUMBER(t):
     r'\d+'
@@ -59,7 +59,7 @@ print ("Data: '%s'" % data2)
 print ("Data: '%s'" % data3)
 
 
-lexer.input(data0)
+#lexer.input(data0)
 lexer.input(data1)
 #lexer.input(data2)
 #lexer.input(data3)

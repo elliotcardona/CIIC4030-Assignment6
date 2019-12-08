@@ -3,8 +3,8 @@ import threading
 import sys
 import time
 from random import randint
-class Server:
 
+class Server:
 
     connections = []
     peers = []
@@ -73,24 +73,24 @@ class Client:
 class p2p:
     peers = ['192.168.0.9']
 
+def run():
+    while True:
+        try:
+            print("Trying to connect...")
+            time.sleep(randint(1,5))
+            for peer in p2p.peers:
+                try:
+                    client = Client(peer)
+                except KeyboardInterrupt:
+                    sys.exit(0)
+                except:
+                    pass
 
-while True:
-    try:
-        print("Trying to connect...")
-        time.sleep(randint(1,5))
-        for peer in p2p.peers:
-            try:
-                client = Client(peer)
-            except KeyboardInterrupt:
-                sys.exit(0)
-            except:
-                pass
-
-            try:
-                server = Server()
-            except KeyboardInterrupt:
-                sys.exit(0)
-            except:
-                print("Couldn't start the server...")
-    except KeyboardInterrupt:
-        sys.exit(0)
+                try:
+                    server = Server()
+                except KeyboardInterrupt:
+                    sys.exit(0)
+                except:
+                    print("Couldn't start the server...")
+        except KeyboardInterrupt:
+            sys.exit(0)
