@@ -11,7 +11,7 @@ class Server:
     def __init__(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        sock.bind(('0.0.0.0',10000))
+        sock.bind(('',10000))
         sock.listen(1)
         print("Server running...")
         while True:
@@ -71,7 +71,7 @@ class Client:
         p2p.peers = str(peerData,'utf-8').split(",")[:-1]
 
 class p2p:
-    peers = ['192.168.0.9']
+    peers = ['']
 
 
 while True:
