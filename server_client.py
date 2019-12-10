@@ -2,30 +2,45 @@ import socket
 import threading
 
 
-port = 10000
-socketFamily = socket.AF_INET
-socketType = socket.SOCK_STREAM
+sPort = 10000
+cPort = 10000
+serverSocketFamily = socket.AF_INET
+serverSocketType = socket.SOCK_STREAM
+clientSocketFamily = socket.AF_INET
+clientSocketType = socket.SOCK_STREAM
 
-def setPort(p):
-    global port
-    port = p
 
-def setSocketFamily(sF):
-    global socketFamily
-    socketFamily = sF
+def setServerPort(p):
+    global sPort
+    sPort = p
 
-def setSocketType(sT):
-    global socketType
-    socketType = sT
+def setClientPort(p):
+    global cPort
+    cPort = p
 
+def setServerSocketFamily(sF):
+    global serverSocketFamily
+    serverSocketFamily = sF
+
+def setServerSocketType(sT):
+    global serverSocketType
+    serverSocketType = sT
+
+def setClientSocketFamily(sF):
+    global clientSocketFamily
+    clientSocketFamily = sF
+
+def setClientSocketType(sT):
+    global clientSocketType
+    clientSocketType = sT
 
 class Server:
-    sock = socket.socket(socketFamily, socketType)
+    sock = socket.socket(serverSocketFamily, serverSocketType)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     connections = []
 
     def __init__(self):
-        self.sock.bind(('0.0.0.0',port))
+        self.sock.bind(('0.0.0.0',sPort))
         self.sock.listen(1)
         print("Server running...", self.sock.getsockname())
     def run(self):
@@ -49,7 +64,7 @@ class Server:
                 break
 
 class Client:
-    sock = socket.socket(socketFamily, socketFamily)
+    sock = socket.socket(clientSocketFamily, clientSocketType)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
     def sendMsg(self):
@@ -58,7 +73,7 @@ class Client:
 
     def __init__(self, address):
 
-        self.sock.connect((address, port))
+        self.sock.connect((address, cPort))
 
         iThread = threading.Thread(target=self.sendMsg)
         iThread.daemon = True
