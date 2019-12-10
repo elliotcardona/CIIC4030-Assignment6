@@ -1,13 +1,31 @@
 import socket
 import threading
 
+
+port = 10000
+socketFamily = socket.AF_INET
+socketType = socket.SOCK_STREAM
+
+def setPort(p):
+    global port
+    port = p
+
+def setSocketFamily(sF):
+    global socketFamily
+    socketFamily = sF
+
+def setSocketType(sT):
+    global socketType
+    socketType = sT
+
+
 class Server:
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock = socket.socket(socketFamily, socketType)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     connections = []
 
     def __init__(self):
-        self.sock.bind(('0.0.0.0',10000))
+        self.sock.bind(('0.0.0.0',port))
         self.sock.listen(1)
         print("Server running...", self.sock.getsockname())
     def run(self):
@@ -31,7 +49,7 @@ class Server:
                 break
 
 class Client:
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock = socket.socket(socketFamily, socketFamily)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
     def sendMsg(self):
@@ -40,7 +58,7 @@ class Client:
 
     def __init__(self, address):
 
-        self.sock.connect((address, 10000))
+        self.sock.connect((address, port))
 
         iThread = threading.Thread(target=self.sendMsg)
         iThread.daemon = True
