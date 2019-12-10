@@ -8,15 +8,15 @@ serverSocketFamily = socket.AF_INET
 serverSocketType = socket.SOCK_STREAM
 clientSocketFamily = socket.AF_INET
 clientSocketType = socket.SOCK_STREAM
-anonimity = False
+anonymity = False
 
-def setAnonimity(state):
-    global anonimity
-    anonimity = state
+def setAnonymity(state):
+    global anonymity
+    anonymity = state
 
-def getAnonimity():
-    global anonimity
-    return anonimity
+def getAnonymity():
+    global anonymity
+    return anonymity
 
 def setServerPort(p):
     global sPort
@@ -94,7 +94,7 @@ class Server:
                     break
                 if not connection == c:
                     msg = "(" + str(a[0]) + ":" + str(a[1]) + ")" + "=> " + str(data,'utf-8')
-                    if not anonimity:
+                    if not anonymity:
                         connection.send(bytes(msg, 'utf-8'))
                     else:
                         connection.send(bytes(data))
