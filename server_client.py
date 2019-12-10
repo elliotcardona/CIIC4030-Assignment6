@@ -81,7 +81,6 @@ class Server:
             data = c.recv(1024)
             for connection in self.connections:
                 if not connection == c:
-                    print("to make source: ", type(str(data)))
                     msg = "(" + str(a[0]) + ":" + str(a[1]) + ")" + "=> " + str(data,'utf-8')
                     connection.send(bytes(msg, 'utf-8'))
             if not data:
