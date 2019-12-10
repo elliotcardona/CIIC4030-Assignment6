@@ -12,10 +12,10 @@ def p_start_server(p):
 def p_set_anonymity(p):
     'start : ANONYMITY ID'
     if p[2].lower()=="true":
-        server_client.setAnonimity(True)
+        server_client.setAnonymity(True)
         print("Anonymity changed to:", server_client.getAnonymity())
     elif p[2].lower()=="false":
-        server_client.setAnonimity(False)
+        server_client.setAnonymity(False)
         print("Anonymity changed to:", server_client.getAnonymity())
     else:
         print("Not a valid argument. Must be a bool \"true\" or \"false\".")
@@ -23,10 +23,10 @@ def p_set_anonymity(p):
 def p_start_server_wArgs(p):
     'start : START_SERVER NUMBER ID'
     if p[3].lower()=="true":
-        server_client.setAnonimity(True)
+        server_client.setAnonymity(True)
         print("Anonymity changed to:", server_client.getAnonymity())
     elif p[3].lower()=="false":
-        server_client.setAnonimity(False)
+        server_client.setAnonymity(False)
         print("Anonymity changed to:", server_client.getAnonymity())
     else:
         print("Not a valid argument. Must be a bool \"true\" or \"false\".")
