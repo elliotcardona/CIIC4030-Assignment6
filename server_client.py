@@ -20,7 +20,7 @@ def setClientPort(p):
 
 def setServerSocketFamily(sF):
     global serverSocketFamily
-    serverSocketFamily = socket.sF
+    serverSocketFamily = sF
 
 def setServerSocketType(sT):
     global serverSocketType
@@ -80,7 +80,10 @@ class Server:
         while True:
             data = c.recv(1024)
             for connection in self.connections:
-                connection.send(bytes(data))
+                if not connection == c:
+                    print("to make source: ", type(str(data)))
+                    msg = "(" + str(a[0]) + ":" + str(a[1]) + ")" + "=> " + str(data,'utf-8')
+                    connection.send(bytes(msg, 'utf-8'))
             if not data:
                 print(str(a[0])+':'+str(a[1]), " disconnected")
                 self.connections.remove(c)
@@ -93,7 +96,8 @@ class Client:
 
     def sendMsg(self):
         while True:
-            self.sock.send(bytes(input(""), 'utf-8'))
+            inp = input("")
+            self.sock.send(bytes(inp, 'utf-8'))
 
     def __init__(self, address):
 
@@ -105,8 +109,6 @@ class Client:
         print('Connected:')
         while True:
             data = self.sock.recv(1024)
-            #if(str(data, 'utf-8') == 'END_SESSION'):
-
             if not data:
                 break
             print(str(data, 'utf-8'))
@@ -115,8 +117,9 @@ def execute(t):
     print("Trying to connect...")
     if(t == 'client'):
         try:
-            client = Client('127.0.0.1')
+            Client('127.0.0.1')
         except KeyboardInterrupt:
+            print("Disconnected From Server.")
             pass
         except:
             print("Could not establish connection with server! Make sure server is running.")
