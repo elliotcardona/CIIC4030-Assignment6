@@ -85,37 +85,40 @@ class Server:
             print(str(a[0])+':'+str(a[1])+ " connected")
 
     def handler(self, c, a):
+        T = False
         while True:
             data = c.recv(1024)
             for connection in self.connections:
+                if str(data, 'utf-8') == "END_SESSION" and connection == c:
+                    T = True
+                    break
                 if not connection == c:
                     msg = "(" + str(a[0]) + ":" + str(a[1]) + ")" + "=> " + str(data,'utf-8')
                     if not anonimity:
                         connection.send(bytes(msg, 'utf-8'))
                     else:
                         connection.send(bytes(data))
-            if not data:
+            if not data or T:
                 print(str(a[0])+':'+str(a[1]), " disconnected")
                 self.connections.remove(c)
                 c.close()
                 break
 
-    #def closeServer(self):
-        #self.sock.detach()
-        #self.sock.shutdown(socket.SHUT_RDWR)
-        #self.sock.close()
-
 class Client:
-    sock = socket.socket(clientSocketFamily, clientSocketType)
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
+    sock = socket.socket(clientSocketFamily, clientSocketType)
     def sendMsg(self):
         while True:
-            inp = input("")
-            self.sock.send(bytes(inp, 'utf-8'))
+            t = input("")
+            self.sock.send(bytes(t, 'utf-8'))
+            if t == 'END_SESSION':
+                self.sock.close()
+                break
+
 
     def __init__(self, address):
-
+        self.sock = socket.socket(clientSocketFamily, clientSocketType)
+        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.sock.connect((address, cPort))
 
         iThread = threading.Thread(target=self.sendMsg)
@@ -132,9 +135,9 @@ def execute(t):
     print("Trying to connect...")
     if(t == 'client'):
         try:
-            Client('127.0.0.1')
+            client = Client('0.0.0.0')
+            #127.0.0.1
         except KeyboardInterrupt:
-            print("Disconnected From Server.")
             pass
         except:
             print("Could not establish connection with server! Make sure server is running.")
@@ -142,10 +145,7 @@ def execute(t):
         try:
             server = Server()
             server.run()
-
         except KeyboardInterrupt:
-            #server.closeServer()
-            print("Server shutdown...")
             pass
-        #except:
-            #print("Could not start up the server!")
+        except:
+            print("Could not start up the server!")
