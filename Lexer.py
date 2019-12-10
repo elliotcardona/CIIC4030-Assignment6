@@ -14,7 +14,8 @@ reserved = {
     'FINISH' : 'FINISH',
     'SET_SERVER_PORT' : 'SET_SERVER_PORT',
     'SET_CLIENT_PORT' : 'SET_CLIENT_PORT',
-    'GET_SS_FAMILY' : 'GET_SS_FAMILY'
+    'GET_SS_FAMILY' : 'GET_SS_FAMILY',
+    'ANONIMITY' : 'ANONIMITY'
 
 }
 
@@ -37,7 +38,6 @@ def t_ID(t):
     t.type = reserved.get(t.value, 'ID')  # Check for reserved words
     print ("ID: '%s'" % t.value)
     return t
-
 
 def t_error(t):
  print("Illegal character '%s'" % t.value[0])

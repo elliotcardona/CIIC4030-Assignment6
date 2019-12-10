@@ -10,4 +10,5 @@ while True:
         break
     if not s: continue
     result = parser.parser.parse(s)
-    print(result)
+    if not result== None:
+        print(result)

@@ -8,7 +8,15 @@ serverSocketFamily = socket.AF_INET
 serverSocketType = socket.SOCK_STREAM
 clientSocketFamily = socket.AF_INET
 clientSocketType = socket.SOCK_STREAM
+anonimity = False
 
+def setAnonimity(state):
+    global anonimity
+    anonimity = state
+
+def getAnonimity():
+    global anonimity
+    return anonimity
 
 def setServerPort(p):
     global sPort
@@ -82,12 +90,20 @@ class Server:
             for connection in self.connections:
                 if not connection == c:
                     msg = "(" + str(a[0]) + ":" + str(a[1]) + ")" + "=> " + str(data,'utf-8')
-                    connection.send(bytes(msg, 'utf-8'))
+                    if not anonimity:
+                        connection.send(bytes(msg, 'utf-8'))
+                    else:
+                        connection.send(bytes(data))
             if not data:
                 print(str(a[0])+':'+str(a[1]), " disconnected")
                 self.connections.remove(c)
                 c.close()
                 break
+
+    #def closeServer(self):
+        #self.sock.detach()
+        #self.sock.shutdown(socket.SHUT_RDWR)
+        #self.sock.close()
 
 class Client:
     sock = socket.socket(clientSocketFamily, clientSocketType)
@@ -126,7 +142,10 @@ def execute(t):
         try:
             server = Server()
             server.run()
+
         except KeyboardInterrupt:
+            #server.closeServer()
+            print("Server shutdown...")
             pass
-        except:
-            print("Could not start up the server!")
+        #except:
+            #print("Could not start up the server!")
