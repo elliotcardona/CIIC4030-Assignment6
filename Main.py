@@ -6,6 +6,8 @@ while True:
         s = input('S > ')
     except EOFError:
         break
+    except KeyboardInterrupt:
+        break
     if not s: continue
     result = parser.parser.parse(s)
     print(result)

@@ -20,7 +20,7 @@ def setClientPort(p):
 
 def setServerSocketFamily(sF):
     global serverSocketFamily
-    serverSocketFamily = sF
+    serverSocketFamily = socket.sF
 
 def setServerSocketType(sT):
     global serverSocketType
@@ -33,6 +33,30 @@ def setClientSocketFamily(sF):
 def setClientSocketType(sT):
     global clientSocketType
     clientSocketType = sT
+
+def getServerPort():
+    global sPort
+    return sPort
+
+def getClientPort():
+    global cPort
+    return cPort
+
+def getServerSocketFamily():
+    global serverSocketFamily
+    return serverSocketFamily
+
+def getServerSocketType():
+    global serverSocketType
+    return serverSocketType
+
+def getClientSocketFamily():
+    global clientSocketFamily
+    return clientSocketFamily
+
+def getClientSocketType():
+    global clientSocketType
+    return clientSocketType
 
 class Server:
     sock = socket.socket(serverSocketFamily, serverSocketType)
@@ -81,8 +105,8 @@ class Client:
         print('Connected:')
         while True:
             data = self.sock.recv(1024)
-            if(str(data, 'utf-8') == 'END_SESSION'):
-                break
+            #if(str(data, 'utf-8') == 'END_SESSION'):
+
             if not data:
                 break
             print(str(data, 'utf-8'))
@@ -90,7 +114,17 @@ class Client:
 def execute(t):
     print("Trying to connect...")
     if(t == 'client'):
-        client = Client('127.0.0.1')
+        try:
+            client = Client('127.0.0.1')
+        except KeyboardInterrupt:
+            pass
+        except:
+            print("Could not establish connection with server! Make sure server is running.")
     else:
-        server = Server()
-        server.run()
+        try:
+            server = Server()
+            server.run()
+        except KeyboardInterrupt:
+            pass
+        except:
+            print("Could not start up the server!")
