@@ -1,7 +1,6 @@
 import ply.lex as lex
 
 tokens = [
-    'IP',
     'NUMBER',
     'PERIOD',
     'ID'
@@ -16,7 +15,7 @@ reserved = {
     'SET_CLIENT_PORT' : 'SET_CLIENT_PORT',
     'GET_SERVER_PORT' : 'GET_SERVER_PORT',
     'GET_CLIENT_PORT' : 'GET_CLIENT_PORT',
-    'SET_SERVER_SOCKET_SETTINGS' : 'SET_SERVER_SOCKET_SETTINGS'
+    'ANONYMITY' : 'ANONYMITY'
 
 
 }
