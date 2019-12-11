@@ -61,39 +61,43 @@ def getClientSocketType():
 
 class Server:
     sock = socket.socket(serverSocketFamily, serverSocketType)
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     connections = []
 
     def __init__(self):
+        self.sock = socket.socket(serverSocketFamily, serverSocketType)
+        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.sock.bind(('0.0.0.0',sPort))
         self.sock.listen(1)
         print("Server running...", self.sock.getsockname())
+
     def run(self):
         while True:
             c, a = self.sock.accept()
-            cThread = threading.Thread(target=self.handler, args=(c, a))
+            e = ''
+            cThread = threading.Thread(target=self.handler, args=(c, a, e))
             cThread.daemon = True
             cThread.start()
             self.connections.append(c)
             print(str(a[0])+':'+str(a[1])+ " connected")
 
-    def handler(self, c, a):
+
+
+    def handler(self, c, a, e):
         T = False
         while True:
             data = c.recv(1024)
             for connection in self.connections:
-                if str(data, 'utf-8') == "END_SESSION" and connection == c:
-                    T = True
-                    break
                 if not connection == c:
                     msg = "(" + str(a[0]) + ":" + str(a[1]) + ")" + "=> " + str(data, 'utf-8')
                     connection.send(bytes(msg, 'utf-8'))
+                if str(data, 'utf-8') == "END_SESSION" and connection == c:
+                    T = True
+                    break
             if not data or T:
                 print(str(a[0])+':'+str(a[1]), " disconnected")
                 self.connections.remove(c)
                 c.close()
                 break
-
 class Client:
 
     sock = socket.socket(clientSocketFamily, clientSocketType)
@@ -101,7 +105,6 @@ class Client:
         while True:
             t = input("")
             self.sock.send(bytes(t, 'utf-8'))
-            print(t)
             if t == 'END_SESSION':
                 self.sock.close()
                 break
@@ -126,7 +129,7 @@ def execute(t):
     print("Trying to connect...")
     if(t == 'client'):
         try:
-            client = Client('0.0.0.0')
+            client = Client('127.0.0.1  ')
             #127.0.0.1
         except KeyboardInterrupt:
             pass

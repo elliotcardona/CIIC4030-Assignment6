@@ -31,6 +31,7 @@ def p_create_client_noIP(p):
     'start : START_CLIENT'
     server_client.execute('client')
 
+
 def p_done(p):
     'start : FINISH'
     sys.exit(0)
