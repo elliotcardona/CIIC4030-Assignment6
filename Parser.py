@@ -6,7 +6,6 @@ import server_client
 
 def p_start_server(p):
     'start : START_SERVER'
-    print(p[1])
     server_client.execute('server')
 
 def p_set_anonymity(p):
