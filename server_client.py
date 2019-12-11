@@ -68,10 +68,11 @@ def getClientSocketType():
 
 class Server:
     sock = socket.socket(serverSocketFamily, serverSocketType)
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     connections = []
 
     def __init__(self):
+        self.sock = socket.socket(serverSocketFamily, serverSocketType)
+        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.sock.bind(('0.0.0.0',sPort))
         self.sock.listen(1)
         print("Server running...", self.sock.getsockname())
@@ -103,15 +104,21 @@ class Server:
                 self.connections.remove(c)
                 c.close()
                 break
-
+    def sendExit(self):
+        for connection in self.connections:
+            connection.send(b'\x11')
 class Client:
-
+    eCode = ""
     sock = socket.socket(clientSocketFamily, clientSocketType)
     def sendMsg(self):
         while True:
-            t = input("")
-            self.sock.send(bytes(t, 'utf-8'))
-            if t == 'END_SESSION':
+
+            if self.eCode == 'END_SESSION':
+                self.sock.send(bytes(self.eCode,'utf-8'))
+            else:
+                t = input("")
+                self.sock.send(bytes(t, 'utf-8'))
+            if t == 'END_SESSION' or self.eCode == 'END_SESSION':
                 self.sock.close()
                 break
 
@@ -129,7 +136,10 @@ class Client:
             data = self.sock.recv(1024)
             if not data:
                 break
-            print(str(data, 'utf-8'))
+            if data == b'\x11':
+                self.eCode = 'END_SESSION'
+            else:
+                print(str(data, 'utf-8'))
 
 def execute(t):
     print("Trying to connect...")
@@ -146,6 +156,7 @@ def execute(t):
             server = Server()
             server.run()
         except KeyboardInterrupt:
+            server.sendExit()
             pass
         except:
             print("Could not start up the server!")
