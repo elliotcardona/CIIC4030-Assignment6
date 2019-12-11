@@ -1,7 +1,6 @@
 import ply.lex as lex
 
 tokens = [
-    'IP',
     'NUMBER',
     'PERIOD',
     'ID'
