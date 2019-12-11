@@ -1,5 +1,4 @@
 import socket
-import sys
 import threading
 
 
@@ -9,7 +8,15 @@ serverSocketFamily = socket.AF_INET
 serverSocketType = socket.SOCK_STREAM
 clientSocketFamily = socket.AF_INET
 clientSocketType = socket.SOCK_STREAM
+anonymity = False
 
+def setAnonymity(state):
+    global anonymity
+    anonymity = state
+
+def getAnonymity():
+    global anonymity
+    return anonymity
 
 def setServerPort(p):
     global sPort
@@ -21,7 +28,7 @@ def setClientPort(p):
 
 def setServerSocketFamily(sF):
     global serverSocketFamily
-    serverSocketFamily = socket.sF
+    serverSocketFamily = sF
 
 def setServerSocketType(sT):
     global serverSocketType
@@ -69,48 +76,54 @@ class Server:
         self.sock.bind(('0.0.0.0',sPort))
         self.sock.listen(1)
         print("Server running...", self.sock.getsockname())
-
     def run(self):
         while True:
             c, a = self.sock.accept()
-            e = ''
-            cThread = threading.Thread(target=self.handler, args=(c, a, e))
+            cThread = threading.Thread(target=self.handler, args=(c, a))
             cThread.daemon = True
             cThread.start()
             self.connections.append(c)
             print(str(a[0])+':'+str(a[1])+ " connected")
 
-
-
-    def handler(self, c, a, e):
+    def handler(self, c, a):
         T = False
         while True:
             data = c.recv(1024)
             for connection in self.connections:
-                if not connection == c:
-                    msg = "(" + str(a[0]) + ":" + str(a[1]) + ")" + "=> " + str(data, 'utf-8')
-                    connection.send(bytes(msg, 'utf-8'))
                 if str(data, 'utf-8') == "END_SESSION" and connection == c:
                     T = True
                     break
+                if not connection == c:
+                    msg = "(" + str(a[0]) + ":" + str(a[1]) + ")" + "=> " + str(data,'utf-8')
+                    if not anonymity:
+                        connection.send(bytes(msg, 'utf-8'))
+                    else:
+                        connection.send(bytes(data))
             if not data or T:
                 print(str(a[0])+':'+str(a[1]), " disconnected")
                 self.connections.remove(c)
                 c.close()
                 break
+    def sendExit(self):
+        for connection in self.connections:
+            connection.send(b'\x11')
 class Client:
-
+    eCode = ""
     sock = socket.socket(clientSocketFamily, clientSocketType)
     def sendMsg(self):
         while True:
-            t = input("")
-            self.sock.send(bytes(t, 'utf-8'))
-            if t == 'END_SESSION':
+            try:
+                t = input("")
+                self.sock.send(bytes(t, 'utf-8'))
+            except OSError:
+                pass
+            if t == 'END_SESSION' or self.eCode == 'END_SESSION':
                 self.sock.close()
                 break
 
 
     def __init__(self, address):
+        self.eCode = ""
         self.sock = socket.socket(clientSocketFamily, clientSocketType)
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.sock.connect((address, cPort))
@@ -123,13 +136,18 @@ class Client:
             data = self.sock.recv(1024)
             if not data:
                 break
-            print(str(data, 'utf-8'))
+            if data == b'\x11':
+                self.eCode = 'END_SESSION'
+                self.sock.close()
+                break
+            else:
+                print(str(data, 'utf-8'))
 
 def execute(t):
     print("Trying to connect...")
     if(t == 'client'):
         try:
-            client = Client('127.0.0.1  ')
+            client = Client('0.0.0.0')
             #127.0.0.1
         except KeyboardInterrupt:
             pass
@@ -140,6 +158,7 @@ def execute(t):
             server = Server()
             server.run()
         except KeyboardInterrupt:
+            server.sendExit()
             pass
         except:
             print("Could not start up the server!")
